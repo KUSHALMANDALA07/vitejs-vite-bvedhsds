@@ -1,11 +1,26 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+
+function Post({ profileImage, username, content, isLiked, onToggleLike }) {
+  return (
+    <div className="post">
+      <img style={{ width: "200px" }} className="profile-image" src={profileImage} alt={`${username}'s profile`} />
+      <div className="post-content">
+        <h3>{username}</h3>
+        <p>{content}</p>
+        <button
+          className={`like-button ${isLiked ? 'liked' : ''}`}
+          onClick={onToggleLike}
+        >
+          {isLiked ? 'Unlike' : 'Like'}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function App() {
-
-  const initialPosts = [
+  const [posts, setPosts] = useState([
     {
       id: 1,
       profileImage: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?cs=srgb&dl=pexels-pixabay-220453.jpg&fm=jpg',
@@ -27,13 +42,30 @@ function App() {
       content: 'Just another day...',
       isLiked: false,
     },
-  ];
+  ]);
+
+  const toggleLike = (id) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === id ? { ...post, isLiked: !post.isLiked } : post
+      )
+    );
+  };
 
   return (
-    <>
-      
-    </>
-  )
+    <div className="app">
+      {posts.map((post) => (
+        <Post
+          key={post.id}
+          profileImage={post.profileImage}
+          username={post.username}
+          content={post.content}
+          isLiked={post.isLiked}
+          onToggleLike={() => toggleLike(post.id)}
+        />
+      ))}
+    </div>
+  );
 }
 
-export default App
+export default App;
